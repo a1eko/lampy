@@ -1,0 +1,73 @@
+TITLE Fast sodium current
+
+NEURON {
+    SUFFIX na
+    USEION na READ ena WRITE ina
+    RANGE gbar, gna, ina
+}
+
+UNITS {
+    (S) = (siemens)
+    (mV) = (millivolt)
+    (mA) = (milliamp)
+}
+
+PARAMETER {
+    gbar = 0.0 (S/cm2) 
+}
+
+ASSIGNED {
+    v (mV)
+    ena (mV)
+    ina (mA/cm2)
+    gna (S/cm2)
+    minf
+    mtau (ms)
+    hinf
+    htau (ms)
+}
+
+STATE { m h }
+
+BREAKPOINT {
+    SOLVE states METHOD cnexp
+    gna = gbar*m*m*m*h
+    ina = gna*(v-ena)
+}
+
+DERIVATIVE states {
+    rates()
+    m' = (minf-m)/mtau
+    h' = (hinf-h)/htau
+}
+
+INITIAL {
+    rates()
+    m = minf
+    h = hinf
+}
+
+PROCEDURE rates() {
+    LOCAL alpha, beta, sum
+    UNITSOFF
+    alpha = 0.6*(v-(-43))/(1-exp((-43-v)/1))
+    beta = 0.18*(-52-v)/(1-exp((v-(-52))/20))
+    sum = alpha+beta
+    minf = alpha/sum
+    mtau = 1/sum
+
+    alpha = 0.075*(-46-v)/(1-exp((v-(-46))/1))
+    beta = 0.006/(1+exp((-42-v)/2))
+    sum = alpha+beta
+    hinf = alpha/sum
+    htau = 1/sum
+    UNITSON
+}
+
+COMMENT
+
+Original model by Huss et al (2007).
+
+NEURON implementation by Alexander Kozlov <akozlov@nada.kth.se>.
+
+ENDCOMMENT
