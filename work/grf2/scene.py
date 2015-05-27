@@ -25,8 +25,8 @@ class PoolBottom:
 
     def draw(self):
         if not self.made:
+            glMaterialfv(GL_FRONT, GL_EMISSION, (1, 1, 1, 1))
             glEnable(GL_TEXTURE_2D)
-            #glMaterialfv(GL_FRONT, GL_EMISSION, (1, 1, 1, 1))
             texture = loadImage("images/pool_bottom.jpg")
             dx = 4.0  # 0.2
             #dy = 0.2
