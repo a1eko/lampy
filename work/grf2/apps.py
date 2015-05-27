@@ -19,8 +19,8 @@ class App:
         glFrustum(-1.0, 1.0, -1.0, 1.0, 0.1, 10.0)
         glMatrixMode(GL_MODELVIEW)
 
-	self.scene = scene
-	self.physics = physics
+        self.scene = scene
+        self.physics = physics
         glutDisplayFunc(self.display)
         glutKeyboardFunc(self.keyboard)
         glutIdleFunc(self.simulation)
@@ -64,16 +64,16 @@ class App:
         self.mouse.apply()
 
         glPushMatrix()
-	if self.scene:
-	    self.scene.draw()
-	if self.physics:
-	    self.physics.draw()
+        if self.scene:
+            self.scene.draw()
+        if self.physics:
+            self.physics.draw()
         glPopMatrix()
         glFlush()
 
     def simulation(self):
-	if self.physics:
-	    self.physics.step()
+        if self.physics:
+            self.physics.step()
         self.display()
 
     def keyboard(self, key, x, y):
