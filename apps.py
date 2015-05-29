@@ -16,7 +16,7 @@ class App:
         glClearColor(0.5, 0.5, 0.5, 0.0)
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
-        glFrustum(-1.0, 1.0, -1.0, 1.0, 1.0, 20.0)
+        glFrustum(-1.0, 1.0, -1.0, 1.0, 0.1, 10.0)
         glMatrixMode(GL_MODELVIEW)
 
         self.scene = scene
@@ -25,10 +25,10 @@ class App:
         glutKeyboardFunc(self.keyboard)
         glutIdleFunc(self.simulation)
 
-        light_ambient = [0.2, 0.2, 0.2, 1.0]
-        light_diffuse = [0.8, 0.8, 0.8, 1.0]
+        light_ambient = [0.1, 0.1, 0.1, 1.0]
+        light_diffuse = [0.9, 0.9, 0.9, 1.0]
         light_specular = [1.0, 1.0, 1.0, 1.0]
-        light_position = [1.5, 2.0, 1.0, 0.0]
+        light_position = [1.0, 2.0, 1.0, 0.0]
 
         glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient)
         glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse)
@@ -45,7 +45,7 @@ class App:
 
         self.mouse = MouseInteractor(0.01, 1.0)
         self.camera_dist = 5.0
-        self.camera_tilt = 25.0
+        self.camera_tilt = 45.0
         self.camera_rot = 0.0
 
     def display(self):
@@ -65,9 +65,9 @@ class App:
 
         glPushMatrix()
         if self.scene:
-            self.scene.show()
+            self.scene.draw()
         if self.physics:
-            self.physics.show()
+            self.physics.draw()
         glPopMatrix()
         glFlush()
 
