@@ -28,9 +28,9 @@ class PoolBottom:
             #glMaterialfv(GL_FRONT, GL_EMISSION, (1, 1, 1, 1))
             glEnable(GL_TEXTURE_2D)
             texture = loadImage("images/pool_bottom.jpg")
-            dx = 4.0  # 0.2
+            dx = 20.0  # 4.0  # 0.2
             #dy = 0.2
-            dz = 4.0  # 0.2
+            dz = 20.0  # 4.0  # 0.2
             self.ground = glGenLists(1)
             glNewList(self.ground, GL_COMPILE)
             glBindTexture(GL_TEXTURE_2D, texture)

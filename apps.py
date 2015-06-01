@@ -16,7 +16,6 @@ class App:
         glClearColor(0.5, 0.5, 0.5, 0.0)
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
-        glFrustum(-1.0, 1.0, -1.0, 1.0, 0.1, 10.0)
         glMatrixMode(GL_MODELVIEW)
 
         self.scene = scene
@@ -55,7 +54,7 @@ class App:
         glLoadIdentity()
         w, h = glGetFloatv(GL_VIEWPORT)[2:4]
         aspect = w / h
-        glFrustum(-1.0*aspect, 1.0*aspect, -1.0, 1.0, 1.0, 20.0)
+        glFrustum(-1.0*aspect, 1.0*aspect, -1.0, 1.0, 1.0, 100.0)
         glTranslate(0.0, 0.0, -self.camera_dist)
         glRotate(self.camera_tilt, 1.0, 0.0, 0.0)
         glRotate(self.camera_rot, 0.0, 1.0, 0.0)
