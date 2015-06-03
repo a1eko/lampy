@@ -391,6 +391,19 @@ class DrivenLamprey:
             glPopMatrix()
             glBindTexture(GL_TEXTURE_2D, 0)
             self.make_fins(i)
+            if i == 6:
+                glPushMatrix()
+                #glColor(0.25 * .7, 0.2 * .7, 0.2 * .7)
+                glBegin(GL_POLYGON)
+                glVertex3f(length, height/2.0, 0.0)
+                glVertex3f(length, height/2.0+height/4, 0.0)
+                glVertex3f(length/2, height/2.0+height/2, 0.0)
+                glVertex3f(0.0, height/2.0+height/4, 0.0)
+                glVertex3f(0.0, height/2.0, 0.0)
+                glEnd()
+                #glColor(1, 1, 1)
+                glPopMatrix()
+
             glEndList()
             seg.disp = disp
 	    self.segments.append(seg)
@@ -416,6 +429,7 @@ class DrivenLamprey:
             gluSphere(gluNewQuadric(), 1.2, 10, 5)
             glColor(1, 1, 1)
             glPopMatrix()
+
         elif idx == 8:
             glPushMatrix()
             glColor(0.25 * .8, 0.2 * .8, 0.2 * .8)
@@ -471,7 +485,7 @@ class DrivenLamprey:
                 j.attach(body1, body2)
 
     def waterforce(self, seg):
-        drag = 1.0
+        drag = 0.0  # 1.0
         v = seg.body.vectorFromWorld(seg.body.getLinearVel())
         vsize = math.sqrt(v[1]*v[1] + v[2]*v[2])
         fsize = drag * vsize*vsize
