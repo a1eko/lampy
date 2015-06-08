@@ -247,6 +247,7 @@ class DrivenLamprey:
         self.dt = 1.0 / 60.0
         self.world.setGravity((0, -981*1e-3, 0))
         self.floor = ode.GeomPlane(self.space, (0,1,0), 0)
+	self.follow = None
 
     def make_body(self):
         glEnable(GL_TEXTURE_2D)
@@ -286,6 +287,8 @@ class DrivenLamprey:
         seg.body.setPosition((0.0, 1.0, 0.0))
         seg.geom = ode.GeomBox(self.space, lengths=seg.size)
         seg.geom.setBody(seg.body)
+
+	self.follow = seg.body
 
         disp = glGenLists(1)
         glNewList(disp, GL_COMPILE)

@@ -1,10 +1,14 @@
 import sys
+import Image
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
 
 from mouse import MouseInteractor
+
+frm = 0
+
 
 class App:
     def __init__(self, name="app", scene=None, physics=None):
@@ -22,6 +26,7 @@ class App:
         self.physics = physics
         glutDisplayFunc(self.display)
         glutKeyboardFunc(self.keyboard)
+        glutSpecialFunc(self.fkeyboard)
         glutIdleFunc(self.simulation)
 
         light_ambient = [0.1, 0.1, 0.1, 1.0]
@@ -46,6 +51,12 @@ class App:
         self.camera_dist = 5.0
         self.camera_tilt = 45.0
         self.camera_rot = 0.0
+	self.record = False
+	self.snap = False
+	self.sampl = 5
+	self.frm = 0
+	self.snp = 0
+	self.smp = 0
 
     def display(self):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -58,6 +69,9 @@ class App:
         glTranslate(0.0, 0.0, -self.camera_dist)
         glRotate(self.camera_tilt, 1.0, 0.0, 0.0)
         glRotate(self.camera_rot, 0.0, 1.0, 0.0)
+	if self.physics and self.physics.follow:
+	    focus = self.physics.follow.getRelPointPos((0, 0, 0))
+	    glTranslated(-focus[0], -focus[1], -focus[2])
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
         self.mouse.apply()
@@ -70,6 +84,22 @@ class App:
         glPopMatrix()
         glFlush()
 
+	if self.record:
+	    if self.smp % self.sampl == 0:
+	        buf = glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE)
+	        img = Image.frombuffer('RGB', (w, h), buf, 'raw', 'RGB', 0, -1)
+		img.thumbnail((250, 250), Image.ANTIALIAS)
+	        img.save("frame%05d.png" % self.frm)
+	        self.frm += 1
+	    self.smp += 1
+
+	if self.snap:
+	    buf = glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE)
+	    img = Image.frombuffer('RGB', (w, h), buf, 'raw', 'RGB', 0, -1)
+	    img.save("snap%03d.png" % self.snp)
+	    self.snap = False
+	    self.snp += 1
+
     def simulation(self):
         if self.physics:
             self.physics.step()
@@ -78,6 +108,31 @@ class App:
     def keyboard(self, key, x, y):
         if key == chr(27) or key == 'q' or key == 'Q':
             sys.exit(0)
+        elif key == 's' or key == 'S':
+	    self.snap = True
+        elif key == 'r' or key == 'R':
+	    if not self.record:
+	        self.record = True
+	    else:
+	        self.record = False
+        elif key == 'z':
+	    self.camera_dist *= 1.01
+        elif key == 'Z':
+	    self.camera_dist *= 0.99
+
+    def fkeyboard(self, key, x, y):
+        if key == GLUT_KEY_UP:
+	    self.camera_tilt += 1
+	    if self.camera_tilt > 90:
+	        self.camera_tilt = 90
+        elif key == GLUT_KEY_DOWN:
+	    self.camera_tilt -= 1
+	    if self.camera_tilt < -90:
+	        self.camera_tilt = -90
+        elif key == GLUT_KEY_RIGHT:
+	    self.camera_rot -= 1
+        elif key == GLUT_KEY_LEFT:
+	    self.camera_rot += 1
 
     def run(self):
         glutMainLoop()
