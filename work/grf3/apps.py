@@ -1,4 +1,4 @@
-import sys
+import sys, os
 import Image
 
 from OpenGL.GL import *
@@ -24,6 +24,17 @@ class App:
 
         self.scene = scene
         self.physics = physics
+        self.mouse = MouseInteractor(0.01, 1.0)
+        self.camera_dist = 5.0
+        self.camera_tilt = 45.0
+        self.camera_rot = 0.0
+	self.record = False
+	self.snap = False
+	self.sampl = 5
+	self.frm = 0
+	self.snp = 0
+	self.smp = 0
+
         glutDisplayFunc(self.display)
         glutKeyboardFunc(self.keyboard)
         glutSpecialFunc(self.fkeyboard)
@@ -46,17 +57,6 @@ class App:
         glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE)
         glEnable(GL_COLOR_MATERIAL)
         glEnable(GL_NORMALIZE)
-
-        self.mouse = MouseInteractor(0.01, 1.0)
-        self.camera_dist = 5.0
-        self.camera_tilt = 45.0
-        self.camera_rot = 0.0
-	self.record = False
-	self.snap = False
-	self.sampl = 5
-	self.frm = 0
-	self.snp = 0
-	self.smp = 0
 
     def display(self):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -89,14 +89,14 @@ class App:
 	        buf = glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE)
 	        img = Image.frombuffer('RGB', (w, h), buf, 'raw', 'RGB', 0, -1)
 		img.thumbnail((250, 250), Image.ANTIALIAS)
-	        img.save("frame%05d.png" % self.frm)
+	        img.save("tmp/frame%05d.png" % self.frm)
 	        self.frm += 1
 	    self.smp += 1
 
 	if self.snap:
 	    buf = glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE)
 	    img = Image.frombuffer('RGB', (w, h), buf, 'raw', 'RGB', 0, -1)
-	    img.save("snap%03d.png" % self.snp)
+	    img.save("tmp/snap%03d.png" % self.snp)
 	    self.snap = False
 	    self.snp += 1
 
@@ -110,9 +110,13 @@ class App:
             sys.exit(0)
         elif key == 's' or key == 'S':
 	    self.snap = True
+	    if not os.path.exists('tmp'):
+	        os.makedirs('tmp')
         elif key == 'r' or key == 'R':
 	    if not self.record:
 	        self.record = True
+	        if not os.path.exists('tmp'):
+	            os.makedirs('tmp')
 	    else:
 	        self.record = False
         elif key == 'z':
