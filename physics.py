@@ -247,6 +247,7 @@ class DrivenLamprey:
         self.dt = 1.0 / 60.0
         self.world.setGravity((0, -981*1e-3, 0))
         self.floor = ode.GeomPlane(self.space, (0,1,0), 0)
+	self.follow = None
 
     def make_body(self):
         glEnable(GL_TEXTURE_2D)
@@ -286,6 +287,8 @@ class DrivenLamprey:
         seg.body.setPosition((0.0, 1.0, 0.0))
         seg.geom = ode.GeomBox(self.space, lengths=seg.size)
         seg.geom.setBody(seg.body)
+
+	self.follow = seg.body
 
         disp = glGenLists(1)
         glNewList(disp, GL_COMPILE)
@@ -370,8 +373,8 @@ class DrivenLamprey:
             seg.setRotation()
             seg.body = ode.Body(self.world)
             m = ode.Mass()
-            r1 = height/2 - (i - 5) * (0.4 / 5.0)
-            r2 = height/2 - (i - 6) * (0.4 / 5.0)
+            r1 = height/2 - (i - 5) * (0.5 / 5.0)
+            r2 = height/2 - (i - 6) * (0.5 / 5.0)
             m.setBox(1.5, length, height, width)
 	    m.mass = 1.5 * math.pi/3*(r1*r1+r1*r2+r2*r2)
             seg.body.setMass(m)
@@ -390,7 +393,69 @@ class DrivenLamprey:
             gluSphere(quadric, r1, 10, 5)
             glPopMatrix()
             glBindTexture(GL_TEXTURE_2D, 0)
-            self.make_fins(i)
+            if i == 6:
+                glPushMatrix()
+		glColor(0.25, 0.2, 0.2)
+                glBegin(GL_POLYGON)
+                glVertex3f(length, height/2.0, 0.0)
+                glVertex3f(length*2.0/3.0, height/2.0+height/8, 0.0)
+                glVertex3f(length*1.0/3.0, height/2.0+height/10, 0.0)
+                glVertex3f(0.0, height/2.0-height/8.0, 0.0)
+                glEnd()
+            	glColor(1, 1, 1)
+                glPopMatrix()
+            elif i == 7:
+                glPushMatrix()
+		glColor(0.25, 0.2, 0.2)
+                glBegin(GL_POLYGON)
+                glVertex3f(length/2.0, (r1+r2)/2.0, 0.0)
+                glVertex3f(0.0, r1+r1/4, 0.0)
+                glVertex3f(0.0, r1, 0.0)
+                glEnd()
+            	glColor(1, 1, 1)
+                glPopMatrix()
+            elif i == 8:
+                glPushMatrix()
+		glColor(0.25, 0.2, 0.2)
+                glBegin(GL_POLYGON)
+                glVertex3f(length*1.01, r2, 0.0)
+                glVertex3f(length*1.01, r2+r2/4, 0.0)
+                glVertex3f(length/2.0, 2.5*r1, 0.0)
+                glVertex3f(length/4.0, 2.3*r1, 0.0)
+                glVertex3f(0.0, 1.7*r1, 0.0)
+                glVertex3f(0.0, r1, 0.0)
+                glEnd()
+            	glColor(1, 1, 1)
+                glPopMatrix()
+            elif i == 9:
+                glPushMatrix()
+		glColor(0.25, 0.2, 0.2)
+                glBegin(GL_POLYGON)
+                glVertex3f(length*1.01, r2, 0.0)
+                glVertex3f(length*1.01, 1.7*r2, 0.0)
+                glVertex3f(0.0, r1, 0.0)
+                glEnd()
+            	glColor(1, 1, 1)
+                glPopMatrix()
+            elif i == 10:
+                glPushMatrix()
+		glColor(0.25, 0.2, 0.2)
+                glBegin(GL_POLYGON)
+                glVertex3f(length, 0, 0.0)
+                glVertex3f(length, r1, 0.0)
+                glVertex3f(0.0, 3*r1, 0.0)
+                glVertex3f(-r2, 2.5*r1, 0.0)
+                glVertex3f(-2*r2, r1, 0.0)
+                glVertex3f(-2*r2, 0, 0.0)
+                glVertex3f(-2*r2, -r1, 0.0)
+                glVertex3f(-r2, -2.5*r1, 0.0)
+                glVertex3f(0.0, -3*r1, 0.0)
+                glVertex3f(length, -r1, 0.0)
+                glVertex3f(length, 0, 0.0)
+                glEnd()
+            	glColor(1, 1, 1)
+                glPopMatrix()
+
             glEndList()
             seg.disp = disp
 	    self.segments.append(seg)
@@ -406,40 +471,6 @@ class DrivenLamprey:
 		seg.joint.setAnchor((x+length, y, z))
 		seg.joint.setAxis((0.0, 1.0, 0.0))
 	    rostral = seg
-
-    def make_fins(self, idx):
-        if idx == 6:
-            glPushMatrix()
-            glColor(0.25 * .7, 0.2 * .7, 0.2 * .7)
-            glScale(1.0, 0.5, 0.005)
-            glTranslate(0, 0.4, 0.0)
-            gluSphere(gluNewQuadric(), 1.2, 10, 5)
-            glColor(1, 1, 1)
-            glPopMatrix()
-        elif idx == 8:
-            glPushMatrix()
-            glColor(0.25 * .8, 0.2 * .8, 0.2 * .8)
-            glScale(1.0, 0.5, 0.005)
-            glTranslate(0, 0.5, 0.0)
-            gluSphere(gluNewQuadric(), 1.0, 10, 5)
-            glColor(1, 1, 1)
-            glPopMatrix()
-        elif idx == 9:
-            glPushMatrix()
-            glColor(0.25 * .9, 0.2 * .9, 0.2 * .9)
-            glScale(1.0, 0.5, 0.005)
-            glTranslate(0.1, 0.3, 0.0)
-            gluSphere(gluNewQuadric(), 0.8, 10, 5)
-            glColor(1, 1, 1)
-            glPopMatrix()
-        elif idx == 10:
-            glPushMatrix()
-            glColor(0.25, 0.2, 0.2)
-            glScale(1.0, 0.5, 0.005)
-            glTranslate(0.0, -0.1, 0.0)
-            gluSphere(gluNewQuadric(), 0.8, 10, 5)
-            glColor(1, 1, 1)
-            glPopMatrix()
 
     def draw_segment(self, seg):
         glPushMatrix()
