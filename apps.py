@@ -24,7 +24,7 @@ class App:
 
         self.scene = scene
         self.physics = physics
-        self.mouse = MouseInteractor(0.01, 1.0)
+        self.mouse = MouseInteractor(0.01, 0.1)
         self.camera_dist = 5.0
         self.camera_tilt = 45.0
         self.camera_rot = 0.0
@@ -67,6 +67,7 @@ class App:
         aspect = w / h
         glFrustum(-1.0*aspect, 1.0*aspect, -1.0, 1.0, 1.0, 100.0)
         glTranslate(0.0, 0.0, -self.camera_dist)
+        self.mouse.apply()
         glRotate(self.camera_tilt, 1.0, 0.0, 0.0)
         glRotate(self.camera_rot, 0.0, 1.0, 0.0)
 	if self.physics and self.physics.follow:
@@ -74,7 +75,6 @@ class App:
 	    glTranslated(-focus[0], -focus[1], -focus[2])
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
-        self.mouse.apply()
 
         glPushMatrix()
         if self.scene:
@@ -127,12 +127,8 @@ class App:
     def fkeyboard(self, key, x, y):
         if key == GLUT_KEY_UP:
 	    self.camera_tilt += 1
-	    if self.camera_tilt > 90:
-	        self.camera_tilt = 90
         elif key == GLUT_KEY_DOWN:
 	    self.camera_tilt -= 1
-	    if self.camera_tilt < -90:
-	        self.camera_tilt = -90
         elif key == GLUT_KEY_RIGHT:
 	    self.camera_rot -= 1
         elif key == GLUT_KEY_LEFT:

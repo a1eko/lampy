@@ -1,0 +1,3 @@
++ add Mouse, Keyboard and Camera interactors to tools
+- allow physics to accept multiple actors (add/delete)
+- move bumpy elements of the scene to actors
