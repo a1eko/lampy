@@ -116,38 +116,37 @@ class Keyboard:
         self.camera = camera
         self.scale_rot = scale_rot
         self.scale_trans = scale_trans
-	self.key_pressed = None
+        self.key_pressed = None
         glutKeyboardFunc(self.key_button)
         glutSpecialFunc(self.spec_button)
 
     def key_button(self, key, x, y):
-	self.key_pressed = key
-	if self.camera:
+        self.key_pressed = key
+        if self.camera:
             if key == 'z':
-	        tz = self.scale_trans
-	        self.camera.dist += tz
+                tz = self.scale_trans
+                self.camera.dist += tz
             elif key == 'Z':
-	        tz = self.scale_trans
-	        self.camera.dist -= tz
+                tz = self.scale_trans
+                self.camera.dist -= tz
 
     def spec_button(self, key, x, y):
-	self.key_pressed = key
-	if self.camera:
+        self.key_pressed = key
+        if self.camera:
             if key == GLUT_KEY_UP:
-	        rx = self.scale_rot
-	        self.camera.tilt += rx
+                rx = self.scale_rot
+                self.camera.tilt += rx
             elif key == GLUT_KEY_DOWN:
-	        rx = self.scale_rot
-	        self.camera.tilt -= rx
+                rx = self.scale_rot
+                self.camera.tilt -= rx
             elif key == GLUT_KEY_LEFT:
-	        ry = self.scale_rot
-	        self.camera.rot += ry
+                ry = self.scale_rot
+                self.camera.rot += ry
             elif key == GLUT_KEY_RIGHT:
-	        ry = self.scale_rot
-	        self.camera.rot -= ry
+                ry = self.scale_rot
+                self.camera.rot -= ry
 
     def pressed(self):
-	key = self.key_pressed
-	self.key_pressed = None
-	return key
-        
+        key = self.key_pressed
+        self.key_pressed = None
+        return key
