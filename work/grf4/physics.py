@@ -521,7 +521,7 @@ class DrivenLamprey:
         s = [1, 1, 1, 1, 1, 1, 1, 0.7, 0.5, 0.2]
         for (j, seg) in enumerate(self.segments[1:]):
             phi = 2*math.pi*0.2*self.total_time - 2*math.pi/10*j
-            seg.joint.addTorque(10.0*m[j]*math.sin(phi))
+            seg.joint.addTorque(10.0*m[j]*(math.sin(phi)-0.25))
             a = seg.joint.getAngle()
             r = seg.joint.getAngleRate()
             q = 20.0*a + 5.0*r

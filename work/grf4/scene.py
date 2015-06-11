@@ -21,7 +21,6 @@ class PoolBottom:
     def __init__(self, level=0.0):
         self.made = False
         self.level = level
-        self.underwater = None
 
     def draw(self):
         if not self.made:
@@ -73,7 +72,7 @@ class Underwater:
             quadric = gluNewQuadric()
             gluQuadricNormals(quadric, GLU_SMOOTH)
             gluQuadricTexture(quadric, 1)
-            texture = load_texture("images/underwater2.jpg")
+            texture = load_texture("images/underwater3.jpg")
             self.underwater = glGenLists(1)
             glNewList(self.underwater, GL_COMPILE)
             glBindTexture(GL_TEXTURE_2D, texture)
