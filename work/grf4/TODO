@@ -1,4 +1,4 @@
 + add Mouse, Keyboard and Camera interactors to tools
 - allow physics to accept multiple actors (add/delete)
 - move bumpy elements of the scene to actors
-- fix head, neck and fin shapes
++ fix head, neck and fin shapes

@@ -9,6 +9,7 @@ import ode
 
 class Demo:
     def __init__(self):
+        self.follow = None
         self.z = 0.0
         self.dz = 0.01
 
@@ -80,6 +81,7 @@ class FrozenLamprey:
         self.displays = []
         self.segments = []
         self.scale = 40.0
+        self.follow = None
         for i in range(11):
             seg = Segment()
             seg.setPosition((-0.013*i*self.scale, 0, 0))
@@ -272,7 +274,7 @@ class DrivenLamprey:
 
         # segment 0 (head)
         seg = Segment()
-        length, height, width = (1.3, 1.2, 0.7*1.2)
+        length, height, width = (1.3, 1.1, 0.6*1.2)
         seg.shape = 'box'
         seg.size = length, height, width
         seg.setPosition((0.0, 1.0, 0.0))
@@ -298,15 +300,15 @@ class DrivenLamprey:
         glRotate(90, 0, 1, 0)
         glScale(width/height, 1.0, 1.0)
         gluCylinder(quadric, r1, r2, length, 10, 1)
-        gluSphere(quadric, 0.58, 10, 5)
+        gluSphere(quadric, r1*.98, 10, 5)
         glTranslate(0, 0, 1.25)
-        gluSphere(quadric, 0.3, 10, 5)
+        gluSphere(quadric, r2, 10, 5)
         glPopMatrix()
 
         glBindTexture(GL_TEXTURE_2D, texture[12])
         glPushMatrix()
         glRotate(90, 0, 1, 0)
-        glScale(0.7, 0.7, 1.0)
+        glScale(0.6, 0.6, 1.0)
         glTranslate(0.000, -0.10, 1.2)
         gluSphere(quadric, 0.45, 8, 5)
         glPopMatrix()
@@ -329,8 +331,42 @@ class DrivenLamprey:
         seg.disp = disp
         self.segments.append(seg)
 
-        # segments 1 (neck) to 5
-        for i in range(1, 6):
+        # segment 1 (neck)
+	i = 1
+        seg = Segment()
+        seg.shape = 'box'
+        length, height, width = (1.3, 1.2, 0.6*1.2)
+        seg.size = length, height, width
+        seg.setPosition((-1.3*i, 1, 0))
+        seg.setRotation()
+        seg.body = ode.Body(self.world)
+        m = ode.Mass()
+        r1 = height/2.0
+        r2 = height/2.0/1.1
+        m.setBox(1.5, length, height, width)
+        m.mass = 1.5 * math.pi/3*(r1*r1+r1*r2+r2*r2)
+        seg.body.setMass(m)
+        seg.body.setPosition((-1.3*i, 1.0, 0.0))
+        seg.geom = ode.GeomBox(self.space, lengths=seg.size)
+        seg.geom.setBody(seg.body)
+
+        disp = glGenLists(1)
+        glNewList(disp, GL_COMPILE)
+        glBindTexture(GL_TEXTURE_2D, texture[i])
+        glPushMatrix()
+        glRotate(90, 0, 1, 0)
+        glScale(width/height, 1.0, 1.0)
+        gluCylinder(quadric, r1, r2, length, 10, 1)
+        glScale(1.0, 1.0, width/height)
+        gluSphere(quadric, height/2, 10, 5)
+        glBindTexture(GL_TEXTURE_2D, 0)
+        glPopMatrix()
+        glEndList()
+        seg.disp = disp
+        self.segments.append(seg)
+
+        # segments 2 to 5
+        for i in range(2, 6):
             seg = Segment()
             seg.shape = 'box'
             length, height, width = (1.3, 1.2, 0.6*1.2)
@@ -398,8 +434,9 @@ class DrivenLamprey:
                 glColor(0.15, 0.1, 0.1)
                 glBegin(GL_POLYGON)
                 glVertex3f(length, height/2.0, 0.0)
-                glVertex3f(length*2.0/3.0, height/2.0+height/8, 0.0)
-                glVertex3f(length*1.0/3.0, height/2.0+height/10, 0.0)
+                glVertex3f(length*3.0/4.0, height/2.0+height/10, 0.0)
+                glVertex3f(length/2.0, height/2.0+height/8, 0.0)
+                glVertex3f(length/4.0, height/2.0+height/20, 0.0)
                 glVertex3f(0.0, height/2.0-height/8.0, 0.0)
                 glEnd()
                 glColor(1, 1, 1)
@@ -409,7 +446,7 @@ class DrivenLamprey:
                 glColor(0.15, 0.1, 0.1)
                 glBegin(GL_POLYGON)
                 glVertex3f(length/2.0, (r1+r2)/2.0, 0.0)
-                glVertex3f(0.0, r1+r1/4, 0.0)
+                glVertex3f(0.0, r1+r1/3, 0.0)
                 glVertex3f(0.0, r1, 0.0)
                 glEnd()
                 glColor(1, 1, 1)
@@ -419,9 +456,10 @@ class DrivenLamprey:
                 glColor(0.15, 0.1, 0.1)
                 glBegin(GL_POLYGON)
                 glVertex3f(length*1.01, r2, 0.0)
-                glVertex3f(length*1.01, r2+r2/4, 0.0)
+                glVertex3f(length*1.01, r2+r2/3, 0.0)
                 glVertex3f(length/2.0, 2.5*r1, 0.0)
-                glVertex3f(length/4.0, 2.2*r1, 0.0)
+                glVertex3f(length/3.0, 2.35*r1, 0.0)
+                glVertex3f(length/4.0, 1.9*r1, 0.0)
                 glVertex3f(0.0, 1.5*r1, 0.0)
                 glVertex3f(0.0, r1, 0.0)
                 glEnd()
