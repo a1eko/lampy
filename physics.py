@@ -2,13 +2,14 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
 
-from tools import loadImage
+from tools import load_texture
 import time, math
 import ode
 
 
 class Demo:
     def __init__(self):
+        self.follow = None
         self.z = 0.0
         self.dz = 0.01
 
@@ -42,12 +43,12 @@ class Segment():
     def __init__(self):
         self.pos = []
         self.rot = []
-	self.body = None
-	self.geom = None
-	self.disp = None
-	self.joint = None
-	self.shape = None
-	self.size = None
+        self.body = None
+        self.geom = None
+        self.disp = None
+        self.joint = None
+        self.shape = None
+        self.size = None
 
     def setPosition(self, pos):
         self.pos = pos
@@ -80,6 +81,7 @@ class FrozenLamprey:
         self.displays = []
         self.segments = []
         self.scale = 40.0
+        self.follow = None
         for i in range(11):
             seg = Segment()
             seg.setPosition((-0.013*i*self.scale, 0, 0))
@@ -127,19 +129,19 @@ class FrozenLamprey:
         gluQuadricTexture(quadric, 1)
 
         texture = []
-        texture.append(loadImage("images/lskin00.jpg"))
-        texture.append(loadImage("images/lskin01.jpg"))
-        texture.append(loadImage("images/lskin02.jpg"))
-        texture.append(loadImage("images/lskin03.jpg"))
-        texture.append(loadImage("images/lskin04.jpg"))
-        texture.append(loadImage("images/lskin05.jpg"))
-        texture.append(loadImage("images/lskin06.jpg"))
-        texture.append(loadImage("images/lskin07.jpg"))
-        texture.append(loadImage("images/lskin08.jpg"))
-        texture.append(loadImage("images/lskin09.jpg"))
-        texture.append(loadImage("images/lskin10.jpg"))
-        texture.append(loadImage("images/leye.jpg"))
-        texture.append(loadImage("images/lmouth.jpg"))
+        texture.append(load_texture("images/lskin00.jpg"))
+        texture.append(load_texture("images/lskin01.jpg"))
+        texture.append(load_texture("images/lskin02.jpg"))
+        texture.append(load_texture("images/lskin03.jpg"))
+        texture.append(load_texture("images/lskin04.jpg"))
+        texture.append(load_texture("images/lskin05.jpg"))
+        texture.append(load_texture("images/lskin06.jpg"))
+        texture.append(load_texture("images/lskin07.jpg"))
+        texture.append(load_texture("images/lskin08.jpg"))
+        texture.append(load_texture("images/lskin09.jpg"))
+        texture.append(load_texture("images/lskin10.jpg"))
+        texture.append(load_texture("images/leye.jpg"))
+        texture.append(load_texture("images/lmouth.jpg"))
 
         # segment 0 (head)
         disp = glGenLists(1)
@@ -237,17 +239,17 @@ class FrozenLamprey:
 
 class DrivenLamprey:
     def __init__(self):
-	self.made = False
+        self.made = False
         self.world = ode.World()
-	self.space = ode.Space()
-	self.contacts = ode.JointGroup()
-	self.segments = []
+        self.space = ode.Space()
+        self.contacts = ode.JointGroup()
+        self.segments = []
         self.last_time = time.time()
         self.total_time = 0.0
         self.dt = 1.0 / 60.0
         self.world.setGravity((0, -981*1e-3, 0))
         self.floor = ode.GeomPlane(self.space, (0,1,0), 0)
-	self.follow = None
+        self.follow = None
 
     def make_body(self):
         glEnable(GL_TEXTURE_2D)
@@ -256,39 +258,39 @@ class DrivenLamprey:
         gluQuadricTexture(quadric, 1)
 
         texture = []
-        texture.append(loadImage("images/lskin00.jpg"))
-        texture.append(loadImage("images/lskin01.jpg"))
-        texture.append(loadImage("images/lskin02.jpg"))
-        texture.append(loadImage("images/lskin03.jpg"))
-        texture.append(loadImage("images/lskin04.jpg"))
-        texture.append(loadImage("images/lskin05.jpg"))
-        texture.append(loadImage("images/lskin06.jpg"))
-        texture.append(loadImage("images/lskin07.jpg"))
-        texture.append(loadImage("images/lskin08.jpg"))
-        texture.append(loadImage("images/lskin09.jpg"))
-        texture.append(loadImage("images/lskin10.jpg"))
-        texture.append(loadImage("images/leye.jpg"))
-        texture.append(loadImage("images/lmouth.jpg"))
+        texture.append(load_texture("images/lskin00.jpg"))
+        texture.append(load_texture("images/lskin01.jpg"))
+        texture.append(load_texture("images/lskin02.jpg"))
+        texture.append(load_texture("images/lskin03.jpg"))
+        texture.append(load_texture("images/lskin04.jpg"))
+        texture.append(load_texture("images/lskin05.jpg"))
+        texture.append(load_texture("images/lskin06.jpg"))
+        texture.append(load_texture("images/lskin07.jpg"))
+        texture.append(load_texture("images/lskin08.jpg"))
+        texture.append(load_texture("images/lskin09.jpg"))
+        texture.append(load_texture("images/lskin10.jpg"))
+        texture.append(load_texture("images/leye.jpg"))
+        texture.append(load_texture("images/lmouth.jpg"))
 
         # segment 0 (head)
-	seg = Segment()
-	length, height, width = (1.3, 1.2, 0.7*1.2)
-	seg.shape = 'box'
-	seg.size = length, height, width
+        seg = Segment()
+        length, height, width = (1.3, 1.1, 0.6*1.2)
+        seg.shape = 'box'
+        seg.size = length, height, width
         seg.setPosition((0.0, 1.0, 0.0))
         seg.setRotation()
         seg.body = ode.Body(self.world)
         m = ode.Mass()
-	r1 = height/2.0
-	r2 = height/4.0
+        r1 = height/2.0
+        r2 = height/4.0
         m.setBox(1.5, length, height, width)
-	m.mass = 1.5 * math.pi/3*(r1*r1+r1*r2+r2*r2)
+        m.mass = 1.5 * math.pi/3*(r1*r1+r1*r2+r2*r2)
         seg.body.setMass(m)
         seg.body.setPosition((0.0, 1.0, 0.0))
         seg.geom = ode.GeomBox(self.space, lengths=seg.size)
         seg.geom.setBody(seg.body)
 
-	self.follow = seg.body
+        self.follow = seg.body
 
         disp = glGenLists(1)
         glNewList(disp, GL_COMPILE)
@@ -298,15 +300,15 @@ class DrivenLamprey:
         glRotate(90, 0, 1, 0)
         glScale(width/height, 1.0, 1.0)
         gluCylinder(quadric, r1, r2, length, 10, 1)
-        gluSphere(quadric, 0.58, 10, 5)
+        gluSphere(quadric, r1*.98, 10, 5)
         glTranslate(0, 0, 1.25)
-        gluSphere(quadric, 0.3, 10, 5)
+        gluSphere(quadric, r2, 10, 5)
         glPopMatrix()
 
         glBindTexture(GL_TEXTURE_2D, texture[12])
         glPushMatrix()
         glRotate(90, 0, 1, 0)
-        glScale(0.7, 0.7, 1.0)
+        glScale(0.6, 0.6, 1.0)
         glTranslate(0.000, -0.10, 1.2)
         gluSphere(quadric, 0.45, 8, 5)
         glPopMatrix()
@@ -327,22 +329,56 @@ class DrivenLamprey:
         glBindTexture(GL_TEXTURE_2D, 0)
         glEndList()
         seg.disp = disp
-	self.segments.append(seg)
+        self.segments.append(seg)
 
-        # segments 1 (neck) to 5
-        for i in range(1, 6):
-	    seg = Segment()
-	    seg.shape = 'box'
-	    length, height, width = (1.3, 1.2, 0.6*1.2)
-	    seg.size = length, height, width
+        # segment 1 (neck)
+        i = 1
+        seg = Segment()
+        seg.shape = 'box'
+        length, height, width = (1.3, 1.2, 0.6*1.2)
+        seg.size = length, height, width
+        seg.setPosition((-1.3*i, 1, 0))
+        seg.setRotation()
+        seg.body = ode.Body(self.world)
+        m = ode.Mass()
+        r1 = height/2.0
+        r2 = height/2.0/1.1
+        m.setBox(1.5, length, height, width)
+        m.mass = 1.5 * math.pi/3*(r1*r1+r1*r2+r2*r2)
+        seg.body.setMass(m)
+        seg.body.setPosition((-1.3*i, 1.0, 0.0))
+        seg.geom = ode.GeomBox(self.space, lengths=seg.size)
+        seg.geom.setBody(seg.body)
+
+        disp = glGenLists(1)
+        glNewList(disp, GL_COMPILE)
+        glBindTexture(GL_TEXTURE_2D, texture[i])
+        glPushMatrix()
+        glRotate(90, 0, 1, 0)
+        glScale(width/height, 1.0, 1.0)
+        gluCylinder(quadric, r1, r2, length, 10, 1)
+        glScale(1.0, 1.0, width/height)
+        gluSphere(quadric, height/2, 10, 5)
+        glBindTexture(GL_TEXTURE_2D, 0)
+        glPopMatrix()
+        glEndList()
+        seg.disp = disp
+        self.segments.append(seg)
+
+        # segments 2 to 5
+        for i in range(2, 6):
+            seg = Segment()
+            seg.shape = 'box'
+            length, height, width = (1.3, 1.2, 0.6*1.2)
+            seg.size = length, height, width
             seg.setPosition((-1.3*i, 1, 0))
             seg.setRotation()
             seg.body = ode.Body(self.world)
             m = ode.Mass()
-	    r1 = height/2.0
-	    r2 = height/2.0
+            r1 = height/2.0
+            r2 = height/2.0
             m.setBox(1.5, length, height, width)
-	    m.mass = 1.5 * math.pi/3*(r1*r1+r1*r2+r2*r2)
+            m.mass = 1.5 * math.pi/3*(r1*r1+r1*r2+r2*r2)
             seg.body.setMass(m)
             seg.body.setPosition((-1.3*i, 1.0, 0.0))
             seg.geom = ode.GeomBox(self.space, lengths=seg.size)
@@ -361,14 +397,14 @@ class DrivenLamprey:
             glPopMatrix()
             glEndList()
             seg.disp = disp
-	    self.segments.append(seg)
+            self.segments.append(seg)
 
         # segments 6 to 10
         for i in range(6, 11):
-	    seg = Segment()
-	    seg.shape = 'box'
-	    length, height, width = (1.3, 1.2, 0.6*1.2)
-	    seg.size = length, height, width
+            seg = Segment()
+            seg.shape = 'box'
+            length, height, width = (1.3, 1.2, 0.6*1.2)
+            seg.size = length, height, width
             seg.setPosition((-1.3*i, 1, 0))
             seg.setRotation()
             seg.body = ode.Body(self.world)
@@ -376,7 +412,7 @@ class DrivenLamprey:
             r1 = height/2 - (i - 5) * (0.5 / 5.0)
             r2 = height/2 - (i - 6) * (0.5 / 5.0)
             m.setBox(1.5, length, height, width)
-	    m.mass = 1.5 * math.pi/3*(r1*r1+r1*r2+r2*r2)
+            m.mass = 1.5 * math.pi/3*(r1*r1+r1*r2+r2*r2)
             seg.body.setMass(m)
             seg.body.setPosition((-1.3*i, 1.0, 0.0))
             seg.geom = ode.GeomBox(self.space, lengths=seg.size)
@@ -395,51 +431,53 @@ class DrivenLamprey:
             glBindTexture(GL_TEXTURE_2D, 0)
             if i == 6:
                 glPushMatrix()
-		glColor(0.25, 0.2, 0.2)
+                glColor(0.15, 0.1, 0.1)
                 glBegin(GL_POLYGON)
                 glVertex3f(length, height/2.0, 0.0)
-                glVertex3f(length*2.0/3.0, height/2.0+height/8, 0.0)
-                glVertex3f(length*1.0/3.0, height/2.0+height/10, 0.0)
+                glVertex3f(length*3.0/4.0, height/2.0+height/10, 0.0)
+                glVertex3f(length/2.0, height/2.0+height/8, 0.0)
+                glVertex3f(length/4.0, height/2.0+height/20, 0.0)
                 glVertex3f(0.0, height/2.0-height/8.0, 0.0)
                 glEnd()
-            	glColor(1, 1, 1)
+                glColor(1, 1, 1)
                 glPopMatrix()
             elif i == 7:
                 glPushMatrix()
-		glColor(0.25, 0.2, 0.2)
+                glColor(0.15, 0.1, 0.1)
                 glBegin(GL_POLYGON)
                 glVertex3f(length/2.0, (r1+r2)/2.0, 0.0)
-                glVertex3f(0.0, r1+r1/4, 0.0)
+                glVertex3f(0.0, r1+r1/3, 0.0)
                 glVertex3f(0.0, r1, 0.0)
                 glEnd()
-            	glColor(1, 1, 1)
+                glColor(1, 1, 1)
                 glPopMatrix()
             elif i == 8:
                 glPushMatrix()
-		glColor(0.25, 0.2, 0.2)
+                glColor(0.15, 0.1, 0.1)
                 glBegin(GL_POLYGON)
                 glVertex3f(length*1.01, r2, 0.0)
-                glVertex3f(length*1.01, r2+r2/4, 0.0)
+                glVertex3f(length*1.01, r2+r2/3, 0.0)
                 glVertex3f(length/2.0, 2.5*r1, 0.0)
-                glVertex3f(length/4.0, 2.3*r1, 0.0)
-                glVertex3f(0.0, 1.7*r1, 0.0)
+                glVertex3f(length/3.0, 2.35*r1, 0.0)
+                glVertex3f(length/4.0, 1.9*r1, 0.0)
+                glVertex3f(0.0, 1.5*r1, 0.0)
                 glVertex3f(0.0, r1, 0.0)
                 glEnd()
-            	glColor(1, 1, 1)
+                glColor(1, 1, 1)
                 glPopMatrix()
             elif i == 9:
                 glPushMatrix()
-		glColor(0.25, 0.2, 0.2)
+                glColor(0.15, 0.1, 0.1)
                 glBegin(GL_POLYGON)
                 glVertex3f(length*1.01, r2, 0.0)
-                glVertex3f(length*1.01, 1.7*r2, 0.0)
+                glVertex3f(length*1.01, 1.5*r2, 0.0)
                 glVertex3f(0.0, r1, 0.0)
                 glEnd()
-            	glColor(1, 1, 1)
+                glColor(1, 1, 1)
                 glPopMatrix()
             elif i == 10:
                 glPushMatrix()
-		glColor(0.25, 0.2, 0.2)
+                glColor(0.15, 0.1, 0.1)
                 glBegin(GL_POLYGON)
                 glVertex3f(length, 0, 0.0)
                 glVertex3f(length, r1, 0.0)
@@ -453,24 +491,24 @@ class DrivenLamprey:
                 glVertex3f(length, -r1, 0.0)
                 glVertex3f(length, 0, 0.0)
                 glEnd()
-            	glColor(1, 1, 1)
+                glColor(1, 1, 1)
                 glPopMatrix()
 
             glEndList()
             seg.disp = disp
-	    self.segments.append(seg)
+            self.segments.append(seg)
 
         # connect segments
-	rostral = None
-	for seg in self.segments:
-	    if rostral:
-		x, y, z = seg.body.getPosition()
-		length, height, width = seg.size
-		seg.joint = ode.HingeJoint(self.world)
-		seg.joint.attach(seg.body, rostral.body)
-		seg.joint.setAnchor((x+length, y, z))
-		seg.joint.setAxis((0.0, 1.0, 0.0))
-	    rostral = seg
+        rostral = None
+        for seg in self.segments:
+            if rostral:
+                x, y, z = seg.body.getPosition()
+                length, height, width = seg.size
+                seg.joint = ode.HingeJoint(self.world)
+                seg.joint.attach(seg.body, rostral.body)
+                seg.joint.setAnchor((x+length, y, z))
+                seg.joint.setAxis((0.0, 1.0, 0.0))
+            rostral = seg
 
     def draw_segment(self, seg):
         glPushMatrix()
@@ -485,11 +523,11 @@ class DrivenLamprey:
 
     def draw(self):
         if not self.made:
-	    self.make_body()
-	    self.made = True
-	for seg in self.segments:
-	    #self.draw_segment(seg)
-	    seg.draw()
+            self.make_body()
+            self.made = True
+        for seg in self.segments:
+            #self.draw_segment(seg)
+            seg.draw()
 
     def collide(self, args, geom1, geom2):
         body1 = geom1.getBody()
@@ -516,20 +554,19 @@ class DrivenLamprey:
             time.sleep(t)
 
     def step(self):
-	self.timer()
-	m = [0.2, 0.5, 1, 1, 1, 1, 1, 1.0, 0.5, 0.2]
-	s = [1, 1, 1, 1, 1, 1, 1, 0.7, 0.5, 0.2]
-	for (j, seg) in enumerate(self.segments[1:]):
-	    phi = 2*math.pi*0.2*self.total_time - 2*math.pi/10*j
-	    seg.joint.addTorque(10.0*m[j]*math.sin(phi))
-	    a = seg.joint.getAngle()
-	    r = seg.joint.getAngleRate()
-	    q = 20.0*a + 5.0*r
-	    seg.joint.addTorque(-q*s[j])
-	    self.waterforce(seg)
+        self.timer()
+        m = [0.2, 0.5, 1, 1, 1, 1, 1, 1.0, 0.5, 0.2]
+        s = [1, 1, 1, 1, 1, 1, 1, 0.7, 0.5, 0.2]
+        for (j, seg) in enumerate(self.segments[1:]):
+            phi = 2*math.pi*0.2*self.total_time - 2*math.pi/10*j
+            seg.joint.addTorque(10.0*m[j]*(math.sin(phi)-0.25))
+            a = seg.joint.getAngle()
+            r = seg.joint.getAngleRate()
+            q = 20.0*a + 5.0*r
+            seg.joint.addTorque(-q*s[j])
+            self.waterforce(seg)
         self.space.collide((), self.collide)
         self.world.step(self.dt)
         self.contacts.empty()
         self.total_time += self.dt
         self.last_time = time.time()
-

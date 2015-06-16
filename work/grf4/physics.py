@@ -332,7 +332,7 @@ class DrivenLamprey:
         self.segments.append(seg)
 
         # segment 1 (neck)
-	i = 1
+        i = 1
         seg = Segment()
         seg.shape = 'box'
         length, height, width = (1.3, 1.2, 0.6*1.2)

@@ -1,8 +1,8 @@
 from OpenGL.GL import *
-#from OpenGL.GLU import *
-#from OpenGL.GLUT import *
+from OpenGL.GLU import *
+from OpenGL.GLUT import *
 
-from tools import loadImage
+from tools import load_texture
 
 class Demo:
     def draw(self):
@@ -21,13 +21,12 @@ class PoolBottom:
     def __init__(self, level=0.0):
         self.made = False
         self.level = level
-        self.ground = None
 
     def draw(self):
         if not self.made:
             glMaterialfv(GL_FRONT, GL_EMISSION, (0.3, 0.3, 0.3, 1))
             glEnable(GL_TEXTURE_2D)
-            texture = loadImage("images/pool_bottom.jpg")
+            texture = load_texture("images/pool_bottom.jpg")
             dx = 20.0  # 4.0  # 0.2
             #dy = 0.2
             dz = 20.0  # 4.0  # 0.2
@@ -58,4 +57,48 @@ class PoolBottom:
         glPushMatrix()
         glTranslate(0.0, self.level, 0.0)
         glCallList(self.ground)
+        glPopMatrix()
+
+
+class Underwater:
+    def __init__(self, level=0.0):
+        self.made = False
+        self.underwater = None
+
+    def draw(self):
+        if not self.made:
+            glMaterialfv(GL_FRONT, GL_EMISSION, (0.3, 0.3, 0.3, 1))
+            glEnable(GL_TEXTURE_2D)
+            quadric = gluNewQuadric()
+            gluQuadricNormals(quadric, GLU_SMOOTH)
+            gluQuadricTexture(quadric, 1)
+            texture = load_texture("images/underwater3.jpg")
+            self.underwater = glGenLists(1)
+            glNewList(self.underwater, GL_COMPILE)
+            glBindTexture(GL_TEXTURE_2D, texture)
+            glPushMatrix()
+            glRotate(90, 1, 0, 0)
+            gluSphere(quadric, 50.0, 15, 15)
+            glPopMatrix()
+            glBindTexture(GL_TEXTURE_2D, 0)
+
+            glColor(2, 2, 2)
+            glPushMatrix()
+            glRotate(90, 1, 0, 0)
+            glBegin(GL_LINES)
+            for z in range(-100, 100, 10):
+                glVertex2f(-100, z); glVertex2f(100, z)
+            glEnd()
+            glRotate(90, 0, 0, 1)
+            glBegin(GL_LINES)
+            for x in range(-100, 100, 10):
+                glVertex2f(-100, x); glVertex2f(100, x)
+            glEnd()
+            glPopMatrix()
+            glColor(1, 1, 1)
+
+            glEndList()
+            self.made = True
+        glPushMatrix()
+        glCallList(self.underwater)
         glPopMatrix()
