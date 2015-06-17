@@ -94,7 +94,7 @@ class BallStick(object):
 
         self.soma.insert('capool')
         self.soma.insert('kca')
-        self.soma.gbar_kca = 0.006	*.2
+        self.soma.gbar_kca = 0.006      *.2
 
         self.dend.insert('na')
         self.dend.gbar_na = 0.032
@@ -113,7 +113,7 @@ class BallStick(object):
 
         self.dend.insert('capool')
         self.dend.insert('kca')
-        self.dend.gbar_kca = 0.060	*.2
+        self.dend.gbar_kca = 0.060      *.2
 
     def position(self, x, y, z):
         soma.push()
@@ -157,13 +157,13 @@ if __name__ == "__main__":
         h.fadvance()
     with open("vm.out", "w") as out:
         for time, vsoma in zip(tm, vm):
-	    out.write("%g %g\n" % (time, vsoma))
+            out.write("%g %g\n" % (time, vsoma))
     with open("ca.out", "w") as out:
         for time, conc in zip(tm, ca):
-	    out.write("%g %g\n" % (time, conc))
+            out.write("%g %g\n" % (time, conc))
     try:
         import matplotlib.pyplot as plt
-	plt.plot(tm, vm)
-	plt.show()
+        plt.plot(tm, vm)
+        plt.show()
     except ImportError:
         pass

@@ -6,7 +6,7 @@ from math import sqrt
 class BallStick(object):
     def __init__(self, scale=1):
         self.x = self.y = self.z = 0.
-	self.scale = scale
+        self.scale = scale
         self.topol()
         self.subsets()
         self.geom()
@@ -29,7 +29,7 @@ class BallStick(object):
         self.all.append(sec=self.dend)
 
     def geom(self):
-	lscale = sqrt(self.scale)
+        lscale = sqrt(self.scale)
         self.axon.L = 40*lscale
         self.axon.diam = 1*lscale
         self.soma.L = self.soma.diam = 20*lscale
@@ -109,10 +109,10 @@ class BallStick(object):
 
     def synapses(self):
         s = h.ExpSyn(self.dend(5./6.))
-        s.tau = 2
+        s.tau = 2 +10
         self.synlist.append(s)
         s = h.ExpSyn(self.dend(1./6.))
-        s.tau = 5
+        s.tau = 5 +20
         s.e = -80
         self.synlist.append(s)
 
@@ -198,34 +198,40 @@ def test_pop():
     cells = [BallStick(random()*0.2+0.9) for i in range(ncells)]
     nclist = []
     for postcell in cells:
-	for i in range(10):
-	    precell = choice(cells)
+        for i in range(20):
+            precell = choice(cells)
             nc = precell.connect2target(postcell.synlist[0])
             nc.weight[0] = 0.01
             nc.delay = 0
-	    nclist.append(nc)
+            nclist.append(nc)
     splist = []
-    for cell in cells:
+    stims = []
+    for (i, cell) in enumerate(cells):
         tvec = h.Vector()
         idvec = h.Vector()
         nc = h.NetCon(cell.axon(1)._ref_v, None, sec=cell.axon)
-	nc.record(tvec, idvec)
-	splist.append([tvec, idvec])
+        nc.record(tvec, idvec, i+1)
+        splist.append([tvec, idvec])
     for cell in cells:
         stim = h.IClamp(0.5, sec=cell.soma)
         stim.amp = 0.700
-        stim.delay = 700
+        stim.delay = 600 + 200*random()
         stim.dur = 1000
-    cvode = h.CVode()
-    cvode.active(1)
+	stims.append(stim)
+    #cvode = h.CVode()
+    #cvode.active(1)
+    h.dt = 0.1
     h.finitialize(-65)
     tstop = 2000
     while h.t < tstop:
         h.fadvance()
-    for spikes in splist:
-	print len(spikes[0])
-        for t in spikes[0]:
-	    print t
+    try:
+        import matplotlib.pyplot as plt
+        for spikes in splist:
+            plt.scatter(spikes[0], spikes[1], marker='.')
+        plt.show()
+    except ImportError:
+        pass
 
 
 if __name__ == "__main__":
