@@ -1,7 +1,10 @@
 chan="Na \n\n Wang (1996) J Neurosci [m^3 h^1, hippocampal interneuron]\n"
 
-set term postscript enh solid color 10
-set output "na-wang1996.ps"
+#set term postscript enh solid color 10
+#set output "na-wang1996.ps"
+
+set term pngcairo fontscale 0.5
+set output "na-wang1996.png"
 
 set multiplot layout 3,2 columns title chan
 set border 3

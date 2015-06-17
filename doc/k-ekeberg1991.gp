@@ -1,7 +1,10 @@
 chan="K \n\n Ekeberg (1991) Biol Cybern [n^4, lamprey spinal IN]\n"
 
-set term postscript enh solid color 10
-set output "k-ekeberg1991.ps"
+#set term postscript enh solid color 10
+#set output "k-ekeberg1991.ps"
+
+set term pngcairo fontscale 0.5
+set output "k-ekeberg1991.png"
 
 set multiplot layout 3,2 columns title chan
 set border 3

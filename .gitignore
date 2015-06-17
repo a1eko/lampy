@@ -1,5 +1,6 @@
 *~
 *.bak
+*.log
 *.pyc
 *.out
 x86_64

@@ -1,7 +1,10 @@
 chan="Can \n\n Huss (2007) J Neurophysiol [m^2 h^1, lamprey spinal interneuron]\n"
 
-set term postscript enh solid color 10
-set output "can_huss2007.ps"
+#set term postscript enh solid color 10
+#set output "can_huss2007.ps"
+
+set term pngcairo fontscale 0.5
+set output "can_huss2007.png"
 
 set multiplot layout 3,2 columns title chan
 set border 3
