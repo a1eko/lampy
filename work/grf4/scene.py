@@ -72,7 +72,7 @@ class Underwater:
             quadric = gluNewQuadric()
             gluQuadricNormals(quadric, GLU_SMOOTH)
             gluQuadricTexture(quadric, 1)
-            texture = load_texture("images/underwater3.jpg")
+            texture = load_texture("images/underwater.jpg")
             self.underwater = glGenLists(1)
             glNewList(self.underwater, GL_COMPILE)
             glBindTexture(GL_TEXTURE_2D, texture)
